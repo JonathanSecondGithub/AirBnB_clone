@@ -2,7 +2,7 @@
 import json
 
 class FileStorage:
-    __file_path = ""
+    __file_path = "objects.json"
     __objects = []
 
     def all(self):
@@ -18,4 +18,4 @@ class FileStorage:
     def reload(self):
         if __file_path:
             with open(__file_path,'r') as f:
-                __ objects = json.loads(f)
+                __objects = json.loads(f)
