@@ -6,7 +6,7 @@ from models import storage
 """This is the class for the interactive console where the user enters commands"""
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
-
+    valid_classes = ["BaseModel" , "User"]
     def do_quit(self, line):
         """When the quit command is pressed the terminal is closed and the program is terminated"""
         return True
@@ -22,12 +22,15 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print ("** class name missing **")
             return False
-        if args[0] != "BaseModel":
+        if args[0] not in __class__.valid_classes:
             print ("** class doesn't exist **")
         else:
-            new_instance = storage.new(BaseModel())
-            new_instance.save()
-            print (new_instance.id)
+            if args[0] == "BaseModel":
+                new_instance = BaseModel()
+                new_instance.save()
+                print (new_instance.id)
+            elif args[0] == "User":
+                pass
 
     def do_show(self, line):
         """Prints the string representation of an instance based on the class name and id. Ex: $ show BaseModel 1234-1234-1234."""
@@ -36,7 +39,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print ("** class name missing **")
             return False
-        if args[0] == "BaseModel":
+        if args[0] in __class__.valid_classes:
             if len(args) > 1:
                 key = args[0] + "." + args[1]
                 if key in storage.all():
