@@ -22,6 +22,9 @@ class HBNBCommand(cmd.Cmd):
         """The EOF command is a special command that is executed when you press CTRL-D on your keyboard."""
         return True
 
+    def emptyline(self):
+        """Don't do anything when an empty line + enter is pressed"""
+        pass
     def do_create(self, line):
         """Creates a new instance of BaseModel, saves it (to the JSON file) and prints the id. Ex: $ create BaseModel"""
         args = line.split()
