@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""This is the class for the interactive console where the user enters commands"""
 import cmd
 from models.base_model import BaseModel
 from models.user import User
@@ -10,8 +11,9 @@ from models.review import Review
 from models import storage
 import json
 
-"""This is the class for the interactive console where the user enters commands"""
+
 class HBNBCommand(cmd.Cmd):
+    """This is the class for the interactive console where the user enters commands"""
     prompt = '(hbnb) '
     valid_classes = ["BaseModel" , "User", "State", "City", "Amenity", "Place", "Review"]
     def do_quit(self, line):
