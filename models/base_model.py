@@ -5,7 +5,7 @@ Below are the importations required
 """
 import uuid
 import datetime
-from __init__ import storage
+from models import storage
 
 
 class BaseModel():
@@ -24,25 +24,17 @@ class BaseModel():
 
     def __str__(self):
         """Returns a string representation of the object created with all the attributes"""
-        return ("{} {} {}".format(self.name, self.id, self.__dict__))
+        return ("[{}] ({}) <{}>".format(type(self)__.name__, self.id, self.__dict__))
 
     def save(self):
         """Method to save information to a file"""
-        save(storage)
         self.updated_at = datetime.datetime.now()
+        storage.save()
 
     def to_dict(self):
         """Returns a dictionary representation of the object with keys and values of __dict__ instance"""
         obj_dict = dict(self.__dict__)
         obj_dict["__class__"] = type(self).__name__
-        self.created_at = self.created_at.isoformat()
-        self.updated_at = self.updated_at.isoformat()
+        obj_dict["created_at"] = obj_dict["created_at"].isoformat()
+        obj_dict["updated_at"] = obj_dict["updated_at"].isoformat()
         return obj_dict
-
-test_model = BaseModel()
-test_model.name = "Test"
-test_model.my_number = 89
-print(test_model)
-test_model_json = test_model.to_dict()
-print(test_model_json)
-
