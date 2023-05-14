@@ -10,6 +10,7 @@ from models.place import Place
 from models.review import Review
 from models import storage
 import json
+import shlex
 
 
 class HBNBCommand(cmd.Cmd):
@@ -132,7 +133,7 @@ class HBNBCommand(cmd.Cmd):
             
     def do_update(self, line):
         """ Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). Ex: $ update BaseModel 1234-1234-1234 email "aibnb@mail.com"."""
-        args = line.split()
+        args = shlex.split(line)
         integers = ["number_rooms", "number_bathrooms", "max_guest","price_by_night"]
         floats = ["latitude", "longitude"]
         if len(args) == 0:
