@@ -132,7 +132,7 @@ class HBNBCommand(cmd.Cmd):
             
     def do_update(self, line):
         """ Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). Ex: $ update BaseModel 1234-1234-1234 email "aibnb@mail.com"."""
-        args = shlex.split(arg)
+        args = shlex.split(line)
         integers = ["number_rooms", "number_bathrooms", "max_guest","price_by_night"]
         floats = ["latitude", "longitude"]
         if len(args) == 0:
@@ -140,7 +140,7 @@ class HBNBCommand(cmd.Cmd):
         elif args[0] in __class__.valid_classes:
             if len(args) > 1:
                 k = args[0] + "." + args[1]
-                if k in models.storage.all():
+                if k in storage.all():
                     if len(args) > 2:
                         if len(args) > 3:
                             if args[0] == "Place":
@@ -154,8 +154,8 @@ class HBNBCommand(cmd.Cmd):
                                         args[3] = float(args[3])
                                     except:
                                         args[3] = 0.0
-                                setattr(models.storage.all()[k], args[2], args[3])
-                                models.storage.all()[k].save()
+                                setattr(storage.all()[k], args[2], args[3])
+                                storage.all()[k].save()
                             else:
                                 print("** value missing **")
                         else:
