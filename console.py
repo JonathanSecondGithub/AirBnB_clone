@@ -132,7 +132,7 @@ class HBNBCommand(cmd.Cmd):
             
     def do_update(self, line):
         """ Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). Ex: $ update BaseModel 1234-1234-1234 email "aibnb@mail.com"."""
-        args = shlex.split(line)
+        args = line.split()
         integers = ["number_rooms", "number_bathrooms", "max_guest","price_by_night"]
         floats = ["latitude", "longitude"]
         if len(args) == 0:
