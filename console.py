@@ -155,18 +155,18 @@ class HBNBCommand(cmd.Cmd):
                                         args[3] = float(args[3])
                                     except:
                                         args[3] = 0.0
-                                setattr(storage.all()[k], args[2], args[3])
-                                storage.all()[k].save()
-                            else:
-                                print("** value missing **")
+                            setattr(storage.all()[k], args[2], args[3])
+                            storage.all()[k].save()
                         else:
-                            print("** attribute name missing **")
+                            print("** value missing **")
                     else:
-                        print("** no instance found **")
+                        print("** attribute name missing **")
                 else:
-                    print("** instance id missing **")
+                    print("** no instance found **")
             else:
-                    print("** class doesn't exist **")
+                print("** instance id missing **")
+        else:
+            print("** class doesn't exist **")
 """Code should not be executed when imported."""    
 if __name__ == '__main__':
         HBNBCommand().cmdloop()
