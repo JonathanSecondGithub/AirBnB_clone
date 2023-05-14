@@ -129,21 +129,46 @@ class HBNBCommand(cmd.Cmd):
         if line == "" or line is None:
             print ("** class name missing **")
             return False
-        elif args[0] != "BaseModel":
-            print ("** class doesn't exist **")
-        elif len(args) == 1:
-            print ("** instance id missing **")
-        elif len(args) > 1:
-            key = args[0] + "." + args[1]
-            if key in storage.all():
-                print ("instance found")
-            else:
-                print ("** no instance found **")
-        elif len(args) == 2:
-            print ("** attribute name missing **")
-        elif len(args) == 3:
-            print ("** value missing **")
+        rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
+        match = re.search(rex, line)
+        classname = match.group(1)
+        uid = match.group(2)
+        attribute = match.group(3)
+        value = match.group(4)
 
+        if not match:
+            print("** class name missing **")
+        elif classname not in storage.classes():
+            print("** class doesn't exist **")
+        elif uid is None:
+            print("** instance id missing **")
+        else:
+            key = "{}.{}".format(classname, uid)
+            if key not in storage.all():
+                print("** no instance found **")
+            elif not attribute:
+                print("** attribute name missing **")
+            elif not value:
+                print("** value missing **")
+            else:
+                cast = None
+                if not re.search('^".*"$', value):
+                    if '.' in value:
+                        cast = float
+                    else:
+                        cast = int
+                else:
+                    value = value.replace('"', '')
+                    attributes = storage.attributes()[classname]
+                    if attribute in attributes:
+                        value = attributes[attribute](value)
+                    elif cast:
+                        try:
+                            value = cast(value)
+                        except ValueError:
+                             pass
+                        setattr(storage.all()[key], attribute, value)
+                        storage.all()[key].save()
 """Code should not be executed when imported."""    
 if __name__ == '__main__':
         HBNBCommand().cmdloop()
