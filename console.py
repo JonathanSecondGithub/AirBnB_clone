@@ -129,6 +129,7 @@ class HBNBCommand(cmd.Cmd):
         if line == "" or line is None:
             print ("** class name missing **")
             return
+
         rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
         match = re.search(rex, line)
         classname = match.group(1)
@@ -138,7 +139,7 @@ class HBNBCommand(cmd.Cmd):
 
         if not match:
             print("** class name missing **")
-        elif classname not in storage.classes():
+        elif classname not in __class__.valid_classes():
             print("** class doesn't exist **")
         elif uid is None:
             print("** instance id missing **")
