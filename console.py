@@ -125,7 +125,6 @@ class HBNBCommand(cmd.Cmd):
             
     def do_update(self, line):
         """ Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). Ex: $ update BaseModel 1234-1234-1234 email "aibnb@mail.com"."""
-        args = line.split()
         if line == "" or line is None:
             print ("** class name missing **")
             return
@@ -160,16 +159,17 @@ class HBNBCommand(cmd.Cmd):
                         cast = int
                 else:
                     value = value.replace('"', '')
-                    attributes = storage.attributes()[classname]
-                    if attribute in attributes:
-                        value = attributes[attribute](value)
-                    elif cast:
-                        try:
-                            value = cast(value)
-                        except ValueError:
-                             pass
-                        setattr(storage.all()[key], attribute, value)
-                        storage.all()[key].save()
+                attributes = storage.attributes()[classname]
+                if attribute in attributes:
+                    value = attributes[attribute](value)
+                elif cast:
+                    try:
+                        value = cast(value)
+                    except ValueError:
+                        pass
+                    setattr(storage.all()[key], attribute, value)
+                    storage.all()[key].save()
+
 """Code should not be executed when imported."""    
 if __name__ == '__main__':
         HBNBCommand().cmdloop()
