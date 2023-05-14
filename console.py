@@ -128,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
         args = line.split()
         if line == "" or line is None:
             print ("** class name missing **")
-            return False
+            return
         rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
         match = re.search(rex, line)
         classname = match.group(1)
