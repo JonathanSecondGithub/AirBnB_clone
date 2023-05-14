@@ -16,6 +16,13 @@ class HBNBCommand(cmd.Cmd):
     """This is the class for the interactive console where the user enters commands"""
     prompt = '(hbnb) '
     valid_classes = ["BaseModel" , "User", "State", "City", "Amenity", "Place", "Review"]
+    types = {   'number_rooms': int, 
+                'number_bathrooms': int,
+                'max_guest': int, 
+                'price_by_night': int,
+                'latitude': float, 
+                'longitude': float
+            }
     def do_quit(self, line):
         """When the quit command is pressed the terminal is closed and the program is terminated"""
         return True
@@ -125,51 +132,77 @@ class HBNBCommand(cmd.Cmd):
             
     def do_update(self, line):
         """ Updates an instance based on the class name and id by adding or updating attribute (save the change into the JSON file). Ex: $ update BaseModel 1234-1234-1234 email "aibnb@mail.com"."""
-        if line == "" or line is None:
-            print ("** class name missing **")
+        c_name = c_id = att_name = att_val = kwargs = ''
+
+        # isolate cls from id/args, ex: (<cls>, delim, <id/args>)
+        args = args.partition(" ")
+        if args[0]:
+            c_name = args[0]
+        else:  
+            # class name not present
+            print("** class name missing **")
             return
 
-        rex = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
-        match = re.search(rex, line)
-        classname = match.group(1)
-        uid = match.group(2)
-        attribute = match.group(3)
-        value = match.group(4)
-
-        if not match:
-            print("** class name missing **")
-        elif classname not in __class__.valid_classes():
+        if c_name not in __class__.valid_classes:  # class name invalid
             print("** class doesn't exist **")
-        elif uid is None:
-            print("** instance id missing **")
-        else:
-            key = "{}.{}".format(classname, uid)
-            if key not in storage.all():
-                print("** no instance found **")
-            elif not attribute:
-                print("** attribute name missing **")
-            elif not value:
-                print("** value missing **")
+            return
+            
+            # isolate id from args
+            args = args[2].partition(" ")
+            if args[0]:
+                c_id = args[0]
             else:
-                cast = None
-                if not re.search('^".*"$', value):
-                    if '.' in value:
-                        cast = float
-                    else:
-                        cast = int
-                else:
-                    value = value.replace('"', '')
-                attributes = storage.attributes()[classname]
-                if attribute in attributes:
-                    value = attributes[attribute](value)
-                elif cast:
-                    try:
-                        value = cast(value)
-                    except ValueError:
-                        pass
-                    setattr(storage.all()[key], attribute, value)
-                    storage.all()[key].save()
+                print("** instance id missing **")
+                return
 
+            # generate key from class and id
+            key = c_name + "." + c_id
+
+            if key not in storage.all():
+                 print("** no instance found **")
+                 return
+
+            if '{' in args[2] and '}' in args[2] and type(eval(args[2])) is dict:
+                kwargs = eval(args[2])
+                args = []
+                for k, v in kwargs.items():
+                    args.append(k)
+                    args.append(v)
+            else:
+                args = args[2]
+                if args and args[0] is '\"':
+                    second_quote = args.find('\"', 1)
+                    att_name = args[1:second_quote]
+                    args = args[second_quote + 1:]
+                args = args.partition(' ')
+
+                if not att_name and args[0] is not ' ':
+                    att_name = args[0]
+
+                if args[2] and args[2][0] is '\"':
+                    att_val = args[2][1:args[2].find('\"', 1)]
+
+                if not att_val and args[2]:
+                    att_val = args[2].partition(' ')[0]
+
+                args = [att_name, att_val]
+
+            new_dict = storage.all()[key]
+
+            for i, att_name in enumerate(args):
+                if (i % 2 == 0):
+                    att_val = args[i + 1]
+                    if not att_name:  # check for att_name
+                        print("** attribute name missing **")
+                        return
+                    if not att_val:  # check for att_value
+                        print("** value missing **")
+                        return
+                    if att_name in HBNBCommand.types:
+                        att_val = HBNBCommand.types[att_name](att_val)
+
+                    new_dict.__dict__.update({att_name: att_val})
+            new_dict.save()  # save updates to file
 """Code should not be executed when imported."""    
 if __name__ == '__main__':
         HBNBCommand().cmdloop()
